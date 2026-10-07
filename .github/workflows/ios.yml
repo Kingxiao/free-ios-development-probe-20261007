@@ -1,0 +1,24 @@
+name: Free iOS verification
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: macos-15
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Build and test without Apple credentials
+        run: bash scripts/verify-macos.sh
+      - name: Save verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-verification-evidence
+          path: artifacts/
+          retention-days: 7
