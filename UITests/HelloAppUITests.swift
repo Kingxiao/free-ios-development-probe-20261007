@@ -27,35 +27,35 @@ final class HelloAppUITests: XCTestCase {
         var app = launch()
         let value = app.staticTexts["counterValue"]
         XCTAssertTrue(value.waitForExistence(timeout: 10))
-        XCTAssertEqual(value.label, "0")
+        assertCounterValue(0, in: app)
         snapshot("\(shotPrefix)-flow-01-launch")
 
         for expected in 1...3 {
             tapButton("increment", in: app)
-            XCTAssertEqual(value.label, "\(expected)")
+            assertCounterValue(expected, in: app)
         }
-        XCTAssertEqual(value.label, "3")
+        assertCounterValue(3, in: app)
         snapshot("\(shotPrefix)-flow-02-increment")
         tapButton("decrement", in: app)
-        XCTAssertEqual(value.label, "2")
+        assertCounterValue(2, in: app)
         snapshot("\(shotPrefix)-flow-03-decrement")
         tapButton("reset", in: app)
-        XCTAssertEqual(value.label, "0")
+        assertCounterValue(0, in: app)
         snapshot("\(shotPrefix)-flow-04-reset")
         tapButton("decrement", in: app)
-        XCTAssertEqual(value.label, "0")
+        assertCounterValue(0, in: app)
         snapshot("\(shotPrefix)-flow-05-floor")
 
         // 持久化：改成 5，不带重置参数重启，值应保留
         for expected in 1...5 {
             tapButton("increment", in: app)
-            XCTAssertEqual(value.label, "\(expected)")
+            assertCounterValue(expected, in: app)
         }
         app.terminate()
         app = XCUIApplication()
         app.launch()
         XCTAssertTrue(app.staticTexts["counterValue"].waitForExistence(timeout: 10))
-        XCTAssertEqual(app.staticTexts["counterValue"].label, "5")
+        assertCounterValue(5, in: app)
         snapshot("\(shotPrefix)-flow-06-persistence")
     }
 
@@ -71,20 +71,36 @@ final class HelloAppUITests: XCTestCase {
                 XCTAssertTrue(titleText.waitForExistence(timeout: 10))
                 XCTAssertEqual(titleText.label, title, "\(language) 本地化未生效")
                 let value = app.staticTexts["counterValue"]
-                XCTAssertEqual(value.label, "0")
+                assertCounterValue(0, in: app)
                 tapButton("increment", in: app)
-                XCTAssertEqual(value.label, "1")
+                assertCounterValue(1, in: app)
                 tapButton("increment", in: app)
-                XCTAssertEqual(value.label, "2")
+                assertCounterValue(2, in: app)
                 // 数值截图和点击检查分别滚动到目标，内容无需挤进同一屏。
                 XCTAssertTrue(reveal(value, in: app), "\(language)/\(sizeName) 数值未完整显示")
                 snapshot("\(shotPrefix)-\(language)-\(sizeName)-count-2")
                 tapButton("reset", in: app)
-                XCTAssertEqual(value.label, "0")
+                assertCounterValue(0, in: app)
                 XCTAssertTrue(reveal(value, in: app), "\(language)/\(sizeName) 重置数值未完整显示")
                 snapshot("\(shotPrefix)-\(language)-\(sizeName)-reset-0")
                 app.terminate()
             }
+        }
+    }
+
+    /// 点击完成不代表 SwiftUI 的读数已经更新；只等待状态，不重试点击。
+    @MainActor
+    private func assertCounterValue(_ expected: Int, in app: XCUIApplication,
+                                    file: StaticString = #filePath, line: UInt = #line) {
+        let value = app.staticTexts["counterValue"]
+        guard value.wait(for: \.label, toEqual: "\(expected)", timeout: 10) else {
+            snapshot("\(shotPrefix)-failure-counter-expected-\(expected)")
+            let hierarchy = XCTAttachment(string: app.debugDescription)
+            hierarchy.name = "counter-timeout-hierarchy"
+            hierarchy.lifetime = .keepAlways
+            add(hierarchy)
+            XCTFail("计数器 10 秒内未达到 \(expected)，实际为 \(value.label)", file: file, line: line)
+            return
         }
     }
 
