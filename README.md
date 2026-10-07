@@ -88,7 +88,23 @@ CI 显式使用 `contents: read`，checkout 不保留认证凭据。无需提供
 
 ## 已知回归与验收
 
-原始 `6aac133` 的 [full 运行](https://github.com/Kingxiao/ios-hello-test/actions/runs/37326944043)中，SE 的浅色与深色无障碍审计报告 Reset 的动态字体支持不完整；业务交互与截图矩阵通过。本分支调整了大字号按钮布局，并保留原审计和更严格的滚动/状态检查。只有新的 macOS CI 通过后，才能认定该回归修复已获验证。
+原始 `6aac133` 的 [full 运行](https://github.com/Kingxiao/ios-hello-test/actions/runs/37326944043)中，SE 的浅色与深色无障碍审计报告 Reset 的动态字体支持不完整；业务交互与截图矩阵通过。迁移版本调整了大字号按钮布局，并保留原审计和更严格的滚动/状态检查。
+
+2026-10-07，本仓库源码提交 `87f0f2e50b5a02010f65bb4083a29b6758253707` 的 [quick 运行](https://github.com/Kingxiao/free-ios-development-probe-20261007/actions/runs/37621698802)、[PR 检查](https://github.com/Kingxiao/free-ios-development-probe-20261007/actions/runs/37623122093)和 [full 运行](https://github.com/Kingxiao/free-ios-development-probe-20261007/actions/runs/37623731149)全部通过。后续 README 验收更新仅修改文档，没有修改该被测代码。
+
+| 完整回归环境 | UI 测试执行次数 | 主动截图 | 原始结果包 |
+| --- | ---: | ---: | ---: |
+| iPhone SE 3 / iOS 26.5 / 深浅色 | 5 | 22 | 2 |
+| iPhone 17 Pro Max / iOS 26.5 / 深浅色 | 5 | 22 | 2 |
+| iPad A16 / iOS 26.5 / 深浅色 | 5 | 22 | 2 |
+| iPhone 16 / iOS 18.6 / 浅色 | 3 | 14 | 1 |
+| 合计 | **18，零失败** | **80** | **7** |
+
+Linux 的 4 个业务测试、4 个证据导出回归和 17 项源码预检通过；Release 未签名真机构建通过。SE 两种外观的完整 Apple 无障碍审计通过，原来的 Reset 动态字体问题在本次环境中未重现。
+
+完整产物已下载到本地项目的 `artifacts/migration-full-37623731149/`：80 张 PNG 均通过完整解码检查，7 份 `.xcresult`、结构化摘要和测试日志保留；`local-verification.json` 记录逐轮核对结果，`ipa/out/HelloApp-unsigned.ipa` 保留未签名产物。人工查看了 SE 深色中文最大字号、iPad 深色中文最大字号及 iOS 18 中文最大字号等代表截图。大字号的长内容需要滚动，截图不代表所有控件同时位于单屏内。
+
+这些结果证明 Linux 编写/逻辑测试加远程 macOS 编译/模拟器测试的路径可行；仍未验证免费 Apple Account 的真机签名安装或商店发布。
 
 ## 迁移来源和历史证据
 
