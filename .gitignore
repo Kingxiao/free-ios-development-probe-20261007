@@ -1,12 +1,25 @@
-.DS_Store
+# XcodeGen 生成物
+*.xcodeproj/
+*.xcworkspace/
+# 构建产物
+build/
 DerivedData/
-artifacts/
-xcuserdata/
-*.xcuserstate
-.env
-.env.*
+.build/
+.swiftpm/
+*.ipa
+*.xcarchive
+# 签名材料绝不进库
+*.p12
+*.mobileprovision
+*.p8
+*.cer
 *.pem
 *.key
-*.p12
-*.p8
-*.mobileprovision
+.env
+.env.*
+out/
+logs/
+*.log
+artifacts/
+__pycache__/
+.DS_Store
