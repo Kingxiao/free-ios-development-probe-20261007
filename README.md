@@ -92,6 +92,14 @@ CI 显式使用 `contents: read`，checkout 不保留认证凭据。无需提供
 
 ## 已知回归与验收
 
+2026-10-08，[PR #2](https://github.com/Kingxiao/free-ios-development-probe-20261007/pull/2)合并了两套项目 Skill、开发约定、quick 机型选择，以及操作后等待准确计数的测试修复。被测提交为 `69f6ed0c5808c077b00eca98b7814fa31c2d6135`；合并提交的文件树与被测分支一致。
+
+[PR SE](https://github.com/Kingxiao/free-ios-development-probe-20261007/actions/runs/37646200228)、[Pro quick 的第二次执行](https://github.com/Kingxiao/free-ios-development-probe-20261007/actions/runs/37646221109)和 [full](https://github.com/Kingxiao/free-ios-development-probe-20261007/actions/runs/37650069681)的最终验收轮次全部通过：共 **24 次 UI 测试执行、108 张必需 PNG、9 份原始结果包**。其中 full 为 18 次、80 张、7 份，覆盖 SE/Pro Max/iPad 深浅色及 iPhone 16 的 iOS 18.6；两个单机聚焦回归另外各为 3 次、14 张、1 份。Release 未签名构建也通过，下载的 IPA 已核对 ZIP 校验、App 内容以及缺少签名目录和描述文件。
+
+Pro 的初始即时断言读到 0，而原始录屏随后显示 1，因此改为逐次等待预期读数、最多 10 秒，不重复点击。修复后的第一次 Pro 执行在截图请求处超时，第二次在同一提交通过；失败日志、录屏和原始结果分别保留，不能把复测通过解释为从未失败或真实设备响应速度已验证。
+
+当前验收证据已保存到本地 `artifacts/reference-adoption/`：`ui-acceptance.json` 记录源码关联、各轮摘要与图片哈希；108 张 PNG 均通过 CRC 和完整解码，9 份结果包数据库完整性检查通过。`full-37650069681/` 保存完整矩阵与 IPA，两个聚焦回归保存在各自 run 目录。人工查看了重启计数 5、iOS 18 中文最大字号、SE 深色中文最大字号和 iPad 深色重置等代表画面。免费账号的真机签名安装、硬件能力与商店发布仍未验证。
+
 原始 `6aac133` 的 [full 运行](https://github.com/Kingxiao/ios-hello-test/actions/runs/37326944043)中，SE 的浅色与深色无障碍审计报告 Reset 的动态字体支持不完整；业务交互与截图矩阵通过。迁移版本调整了大字号按钮布局，并保留原审计和更严格的滚动/状态检查。
 
 2026-10-07，本仓库源码提交 `87f0f2e50b5a02010f65bb4083a29b6758253707` 的 [quick 运行](https://github.com/Kingxiao/free-ios-development-probe-20261007/actions/runs/37621698802)、[PR 检查](https://github.com/Kingxiao/free-ios-development-probe-20261007/actions/runs/37623122093)和 [full 运行](https://github.com/Kingxiao/free-ios-development-probe-20261007/actions/runs/37623731149)全部通过。该验收记录的补充提交仅修改 README，没有修改该被测代码。
