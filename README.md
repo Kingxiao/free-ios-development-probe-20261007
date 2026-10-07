@@ -42,14 +42,18 @@ bash -n scripts/ci/ui-test.sh
 
 ```sh
 gh-axi workflow run ios.yml --repo Kingxiao/free-ios-development-probe-20261007 --ref <分支名> --field scope=quick
+gh-axi workflow run ios.yml --repo Kingxiao/free-ios-development-probe-20261007 --ref <分支名> --field scope=quick --field device=iPhone-17-Pro
 gh-axi workflow run ios.yml --repo Kingxiao/free-ios-development-probe-20261007 --ref <分支名> --field scope=full
 ```
 
 | 触发 | 检查 |
 | --- | --- |
 | main 代码 push | Linux 业务测试、证据导出回归和静态预检 |
-| 代码 PR / 手动 quick | 上述检查，加 iPhone SE 最新预装 iOS、浅色 UI 回归 |
+| 代码 PR | 上述检查，加 iPhone SE 最新预装 iOS、浅色 UI 回归 |
+| 手动 quick | 上述检查，加所选机型的最新预装 iOS、浅色 UI 回归；默认 SE，可选 iPhone 17 Pro、17 Pro Max、iPad A16 |
 | 手动 full / `v*` tag | 上述检查，加 SE、Pro Max、iPad 的深浅色矩阵、iOS 18 回归，以及 Release 未签名真机构建 |
+
+`device` 只影响手动 quick；PR 固定 SE，full 和标签运行维持原完整矩阵。一次 quick 只测试一个机型。
 
 UI 测试实际执行按钮点击并断言状态：
 
@@ -90,7 +94,7 @@ CI 显式使用 `contents: read`，checkout 不保留认证凭据。无需提供
 
 原始 `6aac133` 的 [full 运行](https://github.com/Kingxiao/ios-hello-test/actions/runs/37326944043)中，SE 的浅色与深色无障碍审计报告 Reset 的动态字体支持不完整；业务交互与截图矩阵通过。迁移版本调整了大字号按钮布局，并保留原审计和更严格的滚动/状态检查。
 
-2026-10-07，本仓库源码提交 `87f0f2e50b5a02010f65bb4083a29b6758253707` 的 [quick 运行](https://github.com/Kingxiao/free-ios-development-probe-20261007/actions/runs/37621698802)、[PR 检查](https://github.com/Kingxiao/free-ios-development-probe-20261007/actions/runs/37623122093)和 [full 运行](https://github.com/Kingxiao/free-ios-development-probe-20261007/actions/runs/37623731149)全部通过。后续 README 验收更新仅修改文档，没有修改该被测代码。
+2026-10-07，本仓库源码提交 `87f0f2e50b5a02010f65bb4083a29b6758253707` 的 [quick 运行](https://github.com/Kingxiao/free-ios-development-probe-20261007/actions/runs/37621698802)、[PR 检查](https://github.com/Kingxiao/free-ios-development-probe-20261007/actions/runs/37623122093)和 [full 运行](https://github.com/Kingxiao/free-ios-development-probe-20261007/actions/runs/37623731149)全部通过。该验收记录的补充提交仅修改 README，没有修改该被测代码。
 
 | 完整回归环境 | UI 测试执行次数 | 主动截图 | 原始结果包 |
 | --- | ---: | ---: | ---: |
@@ -109,5 +113,7 @@ Linux 的 4 个业务测试、4 个证据导出回归和 17 项源码预检通�
 ## 迁移来源和历史证据
 
 工程结构、业务模块和原始测试迁自用户指定的 [ios-hello-test 的 6aac133](https://github.com/Kingxiao/ios-hello-test/tree/6aac133e145d7b21b05c7857625b49d0772405a8)，随后补充了布局修正、状态断言、步骤截图、原始结果保留和 CI 安全配置。没有迁入其 Agent/MCP 配置。
+
+随后从 `ios-dev-20261007.zip` 择取了两套 MIT 参考资料，适配为本项目的 [SwiftUI Skill](.agents/skills/swiftui-pro/SKILL.md)和 [无障碍 Skill](.agents/skills/ios-accessibility/SKILL.md)。在本仓库目录启动 Codex，可按任务匹配或显式使用 `$swiftui-pro` / `$ios-accessibility`；若未显示则重启 Codex。项目目录发现规则见 [官方 Codex 文档](https://learn.chatgpt.com/docs/build-skills)。开发流程与硬件测试边界见 [开发与测试约定](docs/development-testing.md)，来源、许可、适配记录见 [参考资料来源](docs/reference-sources.md)。原历史对话、CLAUDE 配置和第三方 MCP 配置没有移入本仓库。
 
 本仓库原始最小探针的 [通过记录](https://github.com/Kingxiao/free-ios-development-probe-20261007/actions/runs/37616567439)对应 `5c1ec04`，只覆盖原先的单设备计数流程，不代表迁移后完整矩阵已通过。旧源码可从 Git 历史找回，旧本地证据仍在忽略提交的 `artifacts/`。迁移版本的验收结果以本仓库的新 CI 运行记录为准。

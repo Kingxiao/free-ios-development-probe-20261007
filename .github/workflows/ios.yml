@@ -1,7 +1,7 @@
 name: iOS
 
 # main push：跑 Linux 上的逻辑测试和上架静态检查
-# PR/手动 quick：iPhone SE 浅色回归；手动 full：完整矩阵、旧系统、未签名 ipa
+# PR：iPhone SE 浅色回归；手动 quick：所选机型浅色回归；full：完整矩阵、旧系统、未签名 ipa
 # 打 v* 标签：完整矩阵 + 旧系统 + 未签名 ipa
 on:
   push:
@@ -19,10 +19,15 @@ on:
   workflow_dispatch:
     inputs:
       scope:
-        description: 'quick = SE 浅色；full = 全部机型、深浅色、旧系统、未签名真机构建'
+        description: 'quick = 所选机型浅色；full = 全部机型、深浅色、旧系统、未签名真机构建'
         type: choice
         options: [full, quick]
         default: full
+      device:
+        description: 'quick 模式机型（full 忽略此项）'
+        type: choice
+        options: [iPhone-SE-3rd-generation, iPhone-17-Pro, iPhone-17-Pro-Max, iPad-A16]
+        default: iPhone-SE-3rd-generation
 
 permissions:
   contents: read
@@ -66,7 +71,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        device: ${{ fromJSON((github.event_name == 'pull_request' || inputs.scope == 'quick') && '["iPhone-SE-3rd-generation"]' || '["iPhone-SE-3rd-generation","iPhone-17-Pro-Max","iPad-A16"]') }}
+        device: ${{ fromJSON(github.event_name == 'pull_request' && '["iPhone-SE-3rd-generation"]' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'quick') && format('["{0}"]', inputs.device || 'iPhone-SE-3rd-generation') || '["iPhone-SE-3rd-generation","iPhone-17-Pro-Max","iPad-A16"]') }}
     steps:
       - uses: actions/checkout@v5
         with:
