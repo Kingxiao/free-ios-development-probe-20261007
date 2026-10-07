@@ -1,0 +1,169 @@
+{
+  "archive": "ios-dev-20261007.zip",
+  "archiveSha256": "4047a9955f2800387d557b6027a3609254dfca479b64f842798d1a3ab7631ccf",
+  "upstreamCommit": "not recorded in archive",
+  "files": [
+    {
+      "path": "swiftui-pro/LICENSE",
+      "originalSha256": "b9b479e6df9f27cbc8e7abe91f771b396f3f0fa114d070c7c0b02c820c6b74dc",
+      "adaptedSha256": "b9b479e6df9f27cbc8e7abe91f771b396f3f0fa114d070c7c0b02c820c6b74dc",
+      "modified": false
+    },
+    {
+      "path": "swiftui-pro/SKILL.md",
+      "originalSha256": "c2210dd216faf1364fea9b9c1536a7b33f681cbf0fbde6a750d63ffea08a7d62",
+      "adaptedSha256": "25352f74c3bace89f10746e4a3ca3eacbb1a11ad1f2b77f7c457b425e211fb2c",
+      "modified": true
+    },
+    {
+      "path": "swiftui-pro/references/accessibility.md",
+      "originalSha256": "708d09a35c950fd4c118bbb3cfcab13bb146e7d02084615307bbabc19e00a0e3",
+      "adaptedSha256": "8b46aa41aeab3b50a00bfb981940fcc6209dc5f344082960ab91e33daabdee62",
+      "modified": true
+    },
+    {
+      "path": "swiftui-pro/references/api.md",
+      "originalSha256": "12fa73d65a19c9d08224f925801db8eec914b1cedf5b2f86a38cdda04a66377a",
+      "adaptedSha256": "42a25bd3f15938c4d41aa6959d9ac8811eb82636fbc632eff4cf50f2edc8ea6f",
+      "modified": true
+    },
+    {
+      "path": "swiftui-pro/references/data.md",
+      "originalSha256": "5cc50484c525f748839e12174c065f7ea5fdd4380ce04b6885a906ecd6e6a318",
+      "adaptedSha256": "77f4938992a55a074f3d1ce8931987d8a1f0bcefa5726987fbde18cdf33ecf3d",
+      "modified": true
+    },
+    {
+      "path": "swiftui-pro/references/design.md",
+      "originalSha256": "03e35d46865cc6807255f3c8481cdbac7b3b0f61924185af84c1913d6c983c69",
+      "adaptedSha256": "03e35d46865cc6807255f3c8481cdbac7b3b0f61924185af84c1913d6c983c69",
+      "modified": false
+    },
+    {
+      "path": "swiftui-pro/references/hygiene.md",
+      "originalSha256": "e426e47098ef7c954d8b15ca088c0e5063bb1fea6ed8258f9dc91e14ddfa4ad8",
+      "adaptedSha256": "e426e47098ef7c954d8b15ca088c0e5063bb1fea6ed8258f9dc91e14ddfa4ad8",
+      "modified": false
+    },
+    {
+      "path": "swiftui-pro/references/navigation.md",
+      "originalSha256": "a3adb302455993aff85bbb6b5845ed2fcffa137c8b2ded99c937f3e4b7fcd77b",
+      "adaptedSha256": "a3adb302455993aff85bbb6b5845ed2fcffa137c8b2ded99c937f3e4b7fcd77b",
+      "modified": false
+    },
+    {
+      "path": "swiftui-pro/references/performance.md",
+      "originalSha256": "1b503e3807e216d6b34b45f18bfba89214cea2fa1b88dd7ae8f482ebf0f03616",
+      "adaptedSha256": "1b503e3807e216d6b34b45f18bfba89214cea2fa1b88dd7ae8f482ebf0f03616",
+      "modified": false
+    },
+    {
+      "path": "swiftui-pro/references/swift.md",
+      "originalSha256": "8c31c5f5f99b3fa9586f0260cd1a4b1688dc7bda5e8de2891eb3f9d6a791125a",
+      "adaptedSha256": "8c31c5f5f99b3fa9586f0260cd1a4b1688dc7bda5e8de2891eb3f9d6a791125a",
+      "modified": false
+    },
+    {
+      "path": "swiftui-pro/references/views.md",
+      "originalSha256": "39c534ead91750597c331f071d41d716347c3265d7512987082dc36276eb0aaa",
+      "adaptedSha256": "39c534ead91750597c331f071d41d716347c3265d7512987082dc36276eb0aaa",
+      "modified": false
+    },
+    {
+      "path": "ios-accessibility/LICENSE.txt",
+      "originalSha256": "24d78ca5a2b2d191b9dd7069b7eb5a4ab36c2586f91b998b32a59cd86a348db8",
+      "adaptedSha256": "24d78ca5a2b2d191b9dd7069b7eb5a4ab36c2586f91b998b32a59cd86a348db8",
+      "modified": false
+    },
+    {
+      "path": "ios-accessibility/SKILL.md",
+      "originalSha256": "60ab527206a9a2d28321cf96d4d8ee2b01939f7ba5b7e6996885c10e06acef7f",
+      "adaptedSha256": "599bc002fc384881d8714768213503cb51f0aefb9ea5da7608ec6bc521d462e4",
+      "modified": true
+    },
+    {
+      "path": "ios-accessibility/references/concepts-and-culture.md",
+      "originalSha256": "36974bb64bc739a4565fc323144d71754ccf37f976cece47d5c1cfb7bbc0d9ab",
+      "adaptedSha256": "36974bb64bc739a4565fc323144d71754ccf37f976cece47d5c1cfb7bbc0d9ab",
+      "modified": false
+    },
+    {
+      "path": "ios-accessibility/references/dynamic-type-swiftui.md",
+      "originalSha256": "24579d494b40bac57e7ea3d19c16d11194c13eeab634329f8ebe3fe9c0cd6225",
+      "adaptedSha256": "22800bd516d91511195db5aa578a6cfb097a0ebb22efaa38c3421c5527a4f337",
+      "modified": true
+    },
+    {
+      "path": "ios-accessibility/references/dynamic-type.md",
+      "originalSha256": "a77aef05d40cb6d21ecba68ebe606fc1b63697611bfb42efa334913e6f389545",
+      "adaptedSha256": "a77aef05d40cb6d21ecba68ebe606fc1b63697611bfb42efa334913e6f389545",
+      "modified": false
+    },
+    {
+      "path": "ios-accessibility/references/full-keyboard-access.md",
+      "originalSha256": "4c516892695a89563126e6d952444343fb9ae751620813cafb942e5c92c6dcb8",
+      "adaptedSha256": "4c516892695a89563126e6d952444343fb9ae751620813cafb942e5c92c6dcb8",
+      "modified": false
+    },
+    {
+      "path": "ios-accessibility/references/glossary.md",
+      "originalSha256": "95ee5f07cf2db0725fe79821f15fcd7d1fbd145851ed2dc93156a49e6dd236bb",
+      "adaptedSha256": "95ee5f07cf2db0725fe79821f15fcd7d1fbd145851ed2dc93156a49e6dd236bb",
+      "modified": false
+    },
+    {
+      "path": "ios-accessibility/references/good-practices.md",
+      "originalSha256": "323f56e83e9f2897708761626fcda6bd4452f2b1b2629d9e8d32cc39cee63391",
+      "adaptedSha256": "9eca489accd55d6c25478e59173caa4c8c6f1625757956f843f497100a450363",
+      "modified": true
+    },
+    {
+      "path": "ios-accessibility/references/playbook.md",
+      "originalSha256": "fc1d77b7a1f94f7ef1604722e33108186874f325b854f960a8ee4c9275c0807b",
+      "adaptedSha256": "fc1d77b7a1f94f7ef1604722e33108186874f325b854f960a8ee4c9275c0807b",
+      "modified": false
+    },
+    {
+      "path": "ios-accessibility/references/resources.md",
+      "originalSha256": "6dd843d9e17ae04b1dc289ad8b433ecfce90331f14d98064f5e23dd0db15607b",
+      "adaptedSha256": "6dd843d9e17ae04b1dc289ad8b433ecfce90331f14d98064f5e23dd0db15607b",
+      "modified": false
+    },
+    {
+      "path": "ios-accessibility/references/switch-control.md",
+      "originalSha256": "3dcf9f43f6bcad874a0d54c5a2023f4785b5b26badeb6c5dbb3086806876bb4c",
+      "adaptedSha256": "3dcf9f43f6bcad874a0d54c5a2023f4785b5b26badeb6c5dbb3086806876bb4c",
+      "modified": false
+    },
+    {
+      "path": "ios-accessibility/references/testing-automated.md",
+      "originalSha256": "3584b6ccf9d654cae65fa1a911012e2792919f01a08d3ea9ccd96563817397f8",
+      "adaptedSha256": "fa701a9e693a894765374d1ebd8e08bf47e91d2669863d9cd8cb90e9e216ccd2",
+      "modified": true
+    },
+    {
+      "path": "ios-accessibility/references/testing-manual.md",
+      "originalSha256": "a04a836c180481c73982eac9dbb090929d85087aba7317c31d13bf5bb41df3a8",
+      "adaptedSha256": "a04a836c180481c73982eac9dbb090929d85087aba7317c31d13bf5bb41df3a8",
+      "modified": false
+    },
+    {
+      "path": "ios-accessibility/references/voice-control.md",
+      "originalSha256": "1e38ba2d507cb718f2bc095867d75ab2cef9557429778934818b1bee06b9900f",
+      "adaptedSha256": "1e38ba2d507cb718f2bc095867d75ab2cef9557429778934818b1bee06b9900f",
+      "modified": false
+    },
+    {
+      "path": "ios-accessibility/references/voiceover-swiftui.md",
+      "originalSha256": "f3c947e6d993c0a108873611e46ad4cc8ea5cf7964d9cbbd4b277842203f173a",
+      "adaptedSha256": "3507ccfd410c1cdd67fe69b7cc7c7b094f0dff6101d8647cb0e3c47166fd78c3",
+      "modified": true
+    },
+    {
+      "path": "ios-accessibility/references/voiceover.md",
+      "originalSha256": "cfa53f1290302b70c505bfca539459f462de68a110bc0e59dfa9909974bd2113",
+      "adaptedSha256": "cfa53f1290302b70c505bfca539459f462de68a110bc0e59dfa9909974bd2113",
+      "modified": false
+    }
+  ]
+}
