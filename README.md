@@ -1,66 +1,113 @@
-# 免费 Apple 账号开发 iOS：可复现验证
+# Free iOS Development Probe：原生 iOS 测试工程
 
-此仓库验证原生 SwiftUI App 在**没有 Apple 账号、没有开发者会员、没有签名证书**的 CI 环境中，是否能编译、在 iPhone 模拟器运行并通过界面交互测试。
+这是一个原生 SwiftUI 计数器，支持加减、0–99 边界、重置、重启持久化、中英界面与动态字体。项目保留 Linux 可测试的 `CounterKit`，通过 XcodeGen 生成 Xcode 工程，在 GitHub 的 macOS runner 编译和测试 iOS App。
 
-## 已完成的实测（2026-10-07）
+## 不购买 Apple 开发者会员能做什么
 
-[GitHub Actions 运行记录](https://github.com/Kingxiao/free-ios-development-probe-20261007/actions/runs/37616567439)已成功，测试代码提交为 `5c1ec04296f84524f4c19418e8bd9fca662d32d5`。
+| 环节 | 条件与当前验证范围 |
+| --- | --- |
+| Linux 本地开发 | 编写源码；用 Swift 或 Docker 跑业务逻辑测试、Python 跑静态预检 |
+| iOS 编译和模拟器交互测试 | 需要 macOS/Xcode；本项目使用远程 GitHub macOS runner，不在 Linux 本机运行 Apple 模拟器 |
+| 面向 iPhone 的未签名编译 | CI 生成 Release App 和未签名 IPA；此 IPA **不能直接安装到 iPhone** |
+| 免费账号个人真机测试 | Apple 官方支持 Xcode Personal Team；需要 Mac、免费 Apple Account 和 iPhone，本项目未实测签名安装 |
+| 常规 App Store、TestFlight 分发 | 需要 Apple Developer Program 成员资格，本项目未验证发布 |
 
-- 环境日志：macOS 15.7.9、Xcode 16.4；选中的模拟器为 iPhone 17 Pro / iOS 26.2。
-- 模拟器编译、Xcode 静态分析、模拟器安装和启动：通过。
-- XCTest 真实界面交互：启动 App，读取初值 0，实际点击两次加一并分别断言 1、2，再点击重置并断言 0。**1 个测试，0 失败，14.098 秒**。日志记录了三次 `Tap` 和事件合成。
-- 面向 iPhone 的 Release 未签名编译：通过；此产物仍不能直接安装到 iPhone。
-- CI 整轮运行耗时 11 分 33 秒，包含环境准备、编译、模拟器启动、测试及证据上传；不代表每次迭代都需要同样时间。
-- 已下载并核对完整日志、界面截图、`.xcresult` 测试包与模拟器 App；GitHub 证据下载入口在上述运行页面，保留 7 天。本地证据在忽略提交的 `artifacts/` 目录中。
+免费 Personal Team 有每台设备最多 3 个 App、免费描述文件 7 天有效期等限制，过期后需要重新构建安装。参见 [Apple 账号说明](https://developer.apple.com/help/account/basics/about-your-developer-account/)与 [Xcode 系统要求](https://developer.apple.com/xcode/system-requirements/)。公开仓库的标准 hosted runner 免费，本工作流不使用 larger runner；硬件及私有仓库等费用另计。[GitHub 官方说明](https://docs.github.com/en/actions/reference/runners/github-hosted-runners)
 
-结论：不用购买 Apple 开发者会员，可以开发原生 iOS App；当前只有 Linux 电脑时，已验证可用的是**本地编写代码 + 远程 macOS 构建与模拟器交互测试**。没有在 Linux 本机运行 Apple 模拟器，也没有实测免费 Apple Account 的真机签名安装。
+## Linux 本地检查
 
-## 验证范围
+有 Swift 6.2 时：
 
-| 环节 | 需要付费 Apple Developer Program 吗 | 本测试 |
-| --- | --- | --- |
-| Linux 本地编写 Swift 源码和 Xcode 工程 | 否 | 本地创建 |
-| Xcode 编译和 iOS 模拟器运行 | 否；需要 macOS/Xcode | GitHub macOS runner 实测 |
-| 编译面向真机的未签名 App | 否；需要 macOS/Xcode | CI 实测；**不能直接安装** |
-| 免费账号签名并安装个人 iPhone | 否；需要 Personal Team、设备、签名配置 | 未实测 |
-| TestFlight 和常规 App Store 发布 | 需要开发者计划成员资格 | 不在本测试范围 |
+```sh
+swift test --package-path Packages/CounterKit
+```
 
-CI 是远程 macOS 构建环境，不是 Linux 上运行的 iOS 模拟器。模拟器产物不能安装到 iPhone；未签名真机产物也不能直接安装。
+没有 Swift 时，用 Docker 在只读挂载的源码上测试：
+
+```sh
+docker run --rm -v "$PWD/Packages/CounterKit:/src:ro" -w /src swift:6.2 \
+  swift test --scratch-path /tmp/build
+python3 scripts/preflight.py
+python3 -m unittest discover -s scripts/tests -v
+bash -n scripts/ci/ui-test.sh
+```
+
+`CounterKit` 有 4 个边界与重置单元测试。证据导出测试验证缺图、缺步骤截图和 PNG 签名错误不能被当成完整证据。导出器不执行完整图像解码，下载后仍需核对图片能打开及画面内容。`preflight.py` 是源码与产物静态检查，不能代替 Apple 审核。项目未配置独立第三方 linter；Swift 编译和 UI 测试在 macOS CI 执行。
+
+仓库提供 `.githooks/pre-push`，可按需执行 `git config core.hooksPath .githooks` 启用。Docker 不可用时，该 hook 会提示并跳过业务测试，不能把这次 push 视作本地业务测试已通过；GitHub CI 仍执行业务测试。
+
+## CI 触发与覆盖
+
+在 [Actions 页面](https://github.com/Kingxiao/free-ios-development-probe-20261007/actions/workflows/ios.yml)选择分支和 `scope`；也可以使用当前环境的 CLI：
+
+```sh
+gh-axi workflow run ios.yml --repo Kingxiao/free-ios-development-probe-20261007 --ref <分支名> --field scope=quick
+gh-axi workflow run ios.yml --repo Kingxiao/free-ios-development-probe-20261007 --ref <分支名> --field scope=full
+```
+
+| 触发 | 检查 |
+| --- | --- |
+| main 代码 push | Linux 业务测试、证据导出回归和静态预检 |
+| 代码 PR / 手动 quick | 上述检查，加 iPhone SE 最新预装 iOS、浅色 UI 回归 |
+| 手动 full / `v*` tag | 上述检查，加 SE、Pro Max、iPad 的深浅色矩阵、iOS 18 回归，以及 Release 未签名真机构建 |
+
+UI 测试实际执行按钮点击并断言状态：
+
+- 核心流程：初始 0 → 加到 3 → 减到 2 → 重置 0 → 下限保持 0 → 加到 5 并重启仍为 5，保留 6 张步骤截图。
+- 语言与字号矩阵：英语/简体中文 × 默认/最大无障碍字号，逐次验证 `0 → 1 → 2 → Reset → 0`，每组保存计数 2 和重置 0 两张图。点击前通过有限次滚动确认控件完整位于视口且可点击；不要求所有内容挤在单屏内。
+- Apple 无障碍审计：每个被测机型、系统、外观上的默认英语/默认字号页面执行完整审计。它**没有覆盖所有语言和字号组合的审计**；语言/字号矩阵另外验证布局、操作与状态。
+
+一次成功的 quick/iOS 18 单外观运行应导出 **14 张主动截图**；full 的三个双外观机型各 **22 张**，另 iOS 18 **14 张**，合计 **80 张**。自动失败附件可能额外增加文件，不能只以图片数量判断测试通过。
 
 ## 在 Mac 上复现
 
-安装 Xcode 及 iOS 模拟器运行时，完成 Xcode 首次启动初始化后：
+安装兼容的 Xcode、相应 iOS 模拟器运行时和 XcodeGen，完成 Xcode 首次初始化：
 
 ```sh
-bash scripts/verify-macos.sh
+brew install xcodegen
+xcodegen generate
+scripts/ci/ui-test.sh iPhone-SE-3rd-generation latest "light dark"
 ```
 
-脚本执行工程语法检查、模拟器编译、Xcode 静态分析、模拟器安装和启动、XCTest 界面测试、未签名真机编译。界面测试检查 `0 → 1 → 2 → Reset → 0`。此最小项目没有单独配置第三方 linter。
+设备类型必须存在并与所选运行时兼容。重复运行前请先移走旧的 `build/*.xcresult` 和 `out/`；Xcode 不覆盖已有结果包。CI 使用全新 runner。iOS 18 检查使用指定的 Xcode 26.3 和预装运行时，runner 软件变化时需重新核验可用路径。
 
-`artifacts/` 包含环境版本、截图、日志、测试结果和模拟器 App。重复运行前，请先移动或清除旧的 `artifacts/UITests.xcresult`；Xcode 不覆盖已有结果包。GitHub 全新 runner 无此问题。
+## 如何复查证据
 
-## 在个人 iPhone 上免费测试（需用户本机操作，未实测）
+下载对应 run 的 `ui-*` artifact：
 
-1. 用 Mac 的 Xcode 打开 `FreeIOSProbe.xcodeproj`。
-2. 在 Xcode Settings → Accounts 登录免费 Apple Account。
-3. 在 App target → Signing & Capabilities 选择个人 Personal Team，启用 Automatically manage signing，并把 Bundle Identifier 改为自己的唯一标识。
-4. 连接 iPhone，完成设备信任并按 Xcode 提示开启 Developer Mode。
-5. 选择该 iPhone 为运行目标，点击 Run。此时不要设置 `CODE_SIGNING_ALLOWED=NO`。
+- `out/screenshots/`：命名图片，例如 `iPhone-SE-3rd-generation-ios265-light-zh-Hans-ax-xxxl-count-2.png`。
+- `build/light.xcresult`、`build/dark.xcresult`：原始 XCTest 结果包，包含断言、操作、附件及失败信息，可在 Mac 上用 Xcode 打开。
+- `logs/`：构建与测试日志、环境和源码提交标识、每轮结构化测试摘要、导出日志。
+- `ipa` artifact：Release 未签名 IPA 与真机构建日志，不能据此宣称签名或安装已经验证。
 
-Apple 官方免费账号限制：最多 10 个 App ID、每个平台最多 3 台测试设备、每台设备最多 3 个 App；免费描述文件有效期 7 天，过期后需要重新构建和安装。高级 capability 需逐项核对资格。
+测试失败、摘要导出失败、截图导出失败或必需截图缺失都会让任务失败；仍尽力上传日志与原始结果包。产物保留 7 天，下载到本地后可长期留存。运行结果以对应提交的 CI 日志和测试包为准；分支中存在测试代码不等于测试已经通过。
 
-## 安全及成本边界
+## 凭据与提交边界
 
-仓库只包含人工创建的示例源码、工程、测试、脚本与说明。无需上传 Apple Account、证书、私钥、描述文件或 GitHub 个人 Token。CI 使用 GitHub 自动提供的只读权限，checkout 不保留凭据。公开仓库请勿后续加入真实客户数据或本地账号配置。
+CI 显式使用 `contents: read`，checkout 不保留认证凭据。无需提供 Apple 账号、私钥、描述文件或个人 GitHub Token。证书、私钥、`.env`、构建和证据输出目录均加入忽略规则；提交前仍需检查实际暂存文件，忽略规则不能代替密钥检查。
 
-GitHub 官方说明公开仓库使用标准 hosted runner 免费；本工作流选择标准 `macos-15`，不使用收费 larger runner。证据产物保留 7 天，下载后可自行留存。免费会员不代表有 Mac、设备等硬件成本。
+## 已知回归与验收
 
-## 官方依据
+原始 `6aac133` 的 [full 运行](https://github.com/Kingxiao/ios-hello-test/actions/runs/37326944043)中，SE 的浅色与深色无障碍审计报告 Reset 的动态字体支持不完整；业务交互与截图矩阵通过。迁移版本调整了大字号按钮布局，并保留原审计和更严格的滚动/状态检查。
 
-- [Apple 开发者账号与 Personal Team 限制](https://developer.apple.com/help/account/basics/about-your-developer-account/)
-- [Apple 会员能力对照](https://developer.apple.com/support/compare-memberships/)
-- [Xcode 系统要求](https://developer.apple.com/xcode/system-requirements/)
-- [设备 Developer Mode](https://developer.apple.com/documentation/xcode/enabling-developer-mode-on-a-device)
-- [GitHub 标准 hosted runner](https://docs.github.com/en/actions/reference/runners/github-hosted-runners)
+2026-10-07，本仓库源码提交 `87f0f2e50b5a02010f65bb4083a29b6758253707` 的 [quick 运行](https://github.com/Kingxiao/free-ios-development-probe-20261007/actions/runs/37621698802)、[PR 检查](https://github.com/Kingxiao/free-ios-development-probe-20261007/actions/runs/37623122093)和 [full 运行](https://github.com/Kingxiao/free-ios-development-probe-20261007/actions/runs/37623731149)全部通过。后续 README 验收更新仅修改文档，没有修改该被测代码。
 
-实际测试结果以 GitHub Actions run 和 `artifacts/result.txt` 为准；运行未成功前不能宣称已验证通过。
+| 完整回归环境 | UI 测试执行次数 | 主动截图 | 原始结果包 |
+| --- | ---: | ---: | ---: |
+| iPhone SE 3 / iOS 26.5 / 深浅色 | 5 | 22 | 2 |
+| iPhone 17 Pro Max / iOS 26.5 / 深浅色 | 5 | 22 | 2 |
+| iPad A16 / iOS 26.5 / 深浅色 | 5 | 22 | 2 |
+| iPhone 16 / iOS 18.6 / 浅色 | 3 | 14 | 1 |
+| 合计 | **18，零失败** | **80** | **7** |
+
+Linux 的 4 个业务测试、4 个证据导出回归和 17 项源码预检通过；Release 未签名真机构建通过。SE 两种外观的完整 Apple 无障碍审计通过，原来的 Reset 动态字体问题在本次环境中未重现。
+
+完整产物已下载到本地项目的 `artifacts/migration-full-37623731149/`：80 张 PNG 均通过完整解码检查，7 份 `.xcresult`、结构化摘要和测试日志保留；`local-verification.json` 记录逐轮核对结果，`ipa/out/HelloApp-unsigned.ipa` 保留未签名产物。人工查看了 SE 深色中文最大字号、iPad 深色中文最大字号及 iOS 18 中文最大字号等代表截图。大字号的长内容需要滚动，截图不代表所有控件同时位于单屏内。
+
+这些结果证明 Linux 编写/逻辑测试加远程 macOS 编译/模拟器测试的路径可行；仍未验证免费 Apple Account 的真机签名安装或商店发布。
+
+## 迁移来源和历史证据
+
+工程结构、业务模块和原始测试迁自用户指定的 [ios-hello-test 的 6aac133](https://github.com/Kingxiao/ios-hello-test/tree/6aac133e145d7b21b05c7857625b49d0772405a8)，随后补充了布局修正、状态断言、步骤截图、原始结果保留和 CI 安全配置。没有迁入其 Agent/MCP 配置。
+
+本仓库原始最小探针的 [通过记录](https://github.com/Kingxiao/free-ios-development-probe-20261007/actions/runs/37616567439)对应 `5c1ec04`，只覆盖原先的单设备计数流程，不代表迁移后完整矩阵已通过。旧源码可从 Git 历史找回，旧本地证据仍在忽略提交的 `artifacts/`。迁移版本的验收结果以本仓库的新 CI 运行记录为准。

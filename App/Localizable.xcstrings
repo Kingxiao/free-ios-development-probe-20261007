@@ -1,0 +1,65 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "%lld": {
+      "shouldTranslate": false
+    },
+    "+": {
+      "shouldTranslate": false
+    },
+    "A counter built on Linux and compiled in the cloud.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一个在 Linux 上编写、在云端编译的计数器。"
+          }
+        }
+      }
+    },
+    "Decrease": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "减少"
+          }
+        }
+      }
+    },
+    "Hello from Linux": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "来自 Linux 的问候"
+          }
+        }
+      }
+    },
+    "Increase": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "增加"
+          }
+        }
+      }
+    },
+    "Reset": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重置"
+          }
+        }
+      }
+    },
+    "−": {
+      "shouldTranslate": false
+    }
+  },
+  "version": "1.0"
+}
