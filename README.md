@@ -2,6 +2,19 @@
 
 此仓库验证原生 SwiftUI App 在**没有 Apple 账号、没有开发者会员、没有签名证书**的 CI 环境中，是否能编译、在 iPhone 模拟器运行并通过界面交互测试。
 
+## 已完成的实测（2026-10-07）
+
+[GitHub Actions 运行记录](https://github.com/Kingxiao/free-ios-development-probe-20261007/actions/runs/37616567439)已成功，测试代码提交为 `5c1ec04296f84524f4c19418e8bd9fca662d32d5`。
+
+- 环境日志：macOS 15.7.9、Xcode 16.4；选中的模拟器为 iPhone 17 Pro / iOS 26.2。
+- 模拟器编译、Xcode 静态分析、模拟器安装和启动：通过。
+- XCTest 真实界面交互：启动 App，读取初值 0，实际点击两次加一并分别断言 1、2，再点击重置并断言 0。**1 个测试，0 失败，14.098 秒**。日志记录了三次 `Tap` 和事件合成。
+- 面向 iPhone 的 Release 未签名编译：通过；此产物仍不能直接安装到 iPhone。
+- CI 整轮运行耗时 11 分 33 秒，包含环境准备、编译、模拟器启动、测试及证据上传；不代表每次迭代都需要同样时间。
+- 已下载并核对完整日志、界面截图、`.xcresult` 测试包与模拟器 App；GitHub 证据下载入口在上述运行页面，保留 7 天。本地证据在忽略提交的 `artifacts/` 目录中。
+
+结论：不用购买 Apple 开发者会员，可以开发原生 iOS App；当前只有 Linux 电脑时，已验证可用的是**本地编写代码 + 远程 macOS 构建与模拟器交互测试**。没有在 Linux 本机运行 Apple 模拟器，也没有实测免费 Apple Account 的真机签名安装。
+
 ## 验证范围
 
 | 环节 | 需要付费 Apple Developer Program 吗 | 本测试 |
